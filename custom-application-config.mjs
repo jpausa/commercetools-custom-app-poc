@@ -13,7 +13,7 @@ const config = {
     },
     production: {
       applicationId: 'cm6i46mom000fyc01ypydydog',
-      url: 'https://commercetools-custom-app-poc.vercel.app',
+      url: 'https://test-ct-custom-app.vercel.app',
     },
   },
   oAuthScopes: {
