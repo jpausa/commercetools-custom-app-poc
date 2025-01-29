@@ -12,8 +12,8 @@ const config = {
       initialProjectKey: 'mirion-app-sandbox',
     },
     production: {
-      applicationId: 'TODO',
-      url: 'https://your_app_hostname.com',
+      applicationId: 'cm6i46mom000fyc01ypydydog',
+      url: 'https://commercetools-custom-app-poc.vercel.app',
     },
   },
   oAuthScopes: {
