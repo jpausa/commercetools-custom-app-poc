@@ -6,7 +6,6 @@ import {
   useRouteMatch,
 } from 'react-router-dom';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
-import { NO_VALUE_FALLBACK } from '@commercetools-frontend/constants';
 import {
   usePaginationState,
   useDataTableSortingState,
@@ -14,22 +13,19 @@ import {
 import { BackIcon } from '@commercetools-uikit/icons';
 import Constraints from '@commercetools-uikit/constraints';
 import FlatButton from '@commercetools-uikit/flat-button';
-import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 import DataTable from '@commercetools-uikit/data-table';
 import { ContentNotification } from '@commercetools-uikit/notifications';
 import { Pagination } from '@commercetools-uikit/pagination';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import { SuspendedRoute } from '@commercetools-frontend/application-shell';
-import {
-  formatLocalizedString,
-  transformLocalizedFieldToLocalizedString,
-} from '@commercetools-frontend/l10n';
+import { formatLocalizedString } from '@commercetools-frontend/l10n';
 import type { TFetchChannelsQuery } from '../../types/generated/ctp';
-import { useChannelsFetcher } from '../../hooks/use-channels-connector';
-import { getErrorMessage } from '../../helpers';
 import messages from './messages';
 import ChannelDetails from '../channel-details';
+import { useEffect, useState } from 'react';
+import { useAsyncDispatch, actions } from '@commercetools-frontend/sdk';
+import { MC_API_PROXY_TARGETS } from '@commercetools-frontend/constants';
 
 const columns = [
   { key: 'name', label: 'Channel name' },
@@ -51,16 +47,36 @@ const Channels = (props: TChannelsProps) => {
     dataLocale: context.dataLocale,
     projectLanguages: context.project?.languages,
   }));
-  const { channelsPaginatedResult, error, loading } = useChannelsFetcher({
-    page,
-    perPage,
-    tableSorting,
-  });
+
+  const [channelsPaginatedResult, setChannelsPaginatedResult] = useState<
+    TFetchChannelsQuery['channels'] | undefined
+  >(undefined);
+  const [error, setError] = useState<Error | null>(null);
+  const dispatch = useAsyncDispatch();
+
+  useEffect(() => {
+    async function execute() {
+      try {
+        const result = (await dispatch(
+          actions.get({
+            mcApiProxyTarget: MC_API_PROXY_TARGETS.COMMERCETOOLS_PLATFORM,
+            service: 'channels',
+            options: {},
+          })
+        )) as TFetchChannelsQuery['channels'];
+
+        setChannelsPaginatedResult(result);
+      } catch (error) {
+        setError(error as Error);
+      }
+    }
+    execute();
+  }, [dispatch]);
 
   if (error) {
     return (
       <ContentNotification type="error">
-        <Text.Body>{getErrorMessage(error)}</Text.Body>
+        <Text.Body>{error.message}</Text.Body>
       </ContentNotification>
     );
   }
@@ -83,7 +99,7 @@ const Channels = (props: TChannelsProps) => {
         </ContentNotification>
       </Constraints.Horizontal>
 
-      {loading && <LoadingSpinner />}
+      {/* {loading && <LoadingSpinner />} */}
 
       {channelsPaginatedResult ? (
         <Spacings.Stack scale="l">
@@ -98,19 +114,11 @@ const Channels = (props: TChannelsProps) => {
                 case 'roles':
                   return item.roles.join(', ');
                 case 'name':
-                  return formatLocalizedString(
-                    {
-                      name: transformLocalizedFieldToLocalizedString(
-                        item.nameAllLocales ?? []
-                      ),
-                    },
-                    {
-                      key: 'name',
-                      locale: dataLocale,
-                      fallbackOrder: projectLanguages,
-                      fallback: NO_VALUE_FALLBACK,
-                    }
-                  );
+                  return formatLocalizedString(item, {
+                    key: 'name',
+                    locale: dataLocale,
+                    fallbackOrder: projectLanguages,
+                  });
                 default:
                   return null;
               }

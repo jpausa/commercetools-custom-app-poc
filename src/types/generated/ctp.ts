@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -12496,6 +12498,7 @@ export type TFetchChannelsQuery = {
     count: number;
     offset: number;
     results: Array<{
+      [x: string]: ReactNode;
       __typename?: 'Channel';
       id: string;
       key: string;

@@ -3,6 +3,8 @@ import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import Spacings from '@commercetools-uikit/spacings';
 import Channels from './components/channels';
 import Welcome from './components/welcome';
+import PricesUploadForm from './components/prices-upload-form';
+import AddUsersToBUs from './components/add-users-to-bus/add-users-to-bus';
 
 type ApplicationRoutesProps = {
   children?: ReactNode;
@@ -26,6 +28,12 @@ const ApplicationRoutes = (_props: ApplicationRoutesProps) => {
       <Switch>
         <Route path={`${match.path}/channels`}>
           <Channels linkToWelcome={match.url} />
+        </Route>
+        <Route path={`${match.path}/prices-upload-form`}>
+          <PricesUploadForm linkToWelcome={match.url} />
+        </Route>
+        <Route path={`${match.path}/add-users-to-bus`}>
+          <AddUsersToBUs linkToWelcome={match.url} />
         </Route>
         <Route>
           <Welcome />

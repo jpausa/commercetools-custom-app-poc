@@ -29,10 +29,28 @@ const config = {
   submenuLinks: [
     {
       uriPath: 'channels',
-      defaultLabel: 'Channels',
+      defaultLabel: 'List Channels',
       labelAllLocales: [],
       permissions: [PERMISSIONS.View],
     },
+    {
+      uriPath: 'add-users-to-bus',
+      defaultLabel: 'Associate users to BU',
+      labelAllLocales: [],
+      permissions: [PERMISSIONS.View],
+    },
+    {
+      uriPath: 'prices-upload-form',
+      defaultLabel: 'Create users',
+      labelAllLocales: [],
+      permissions: [PERMISSIONS.View],
+    },
+    {
+      uriPath: 'create-bus',
+      defaultLabel: 'Create BUs',
+      labelAllLocales: [],
+      permissions: [PERMISSIONS.View],
+    }
   ],
 };
 
